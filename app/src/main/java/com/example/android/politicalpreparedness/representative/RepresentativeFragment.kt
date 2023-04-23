@@ -4,55 +4,108 @@ import android.content.Context
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
+import android.widget.ArrayAdapter
+import androidx.fragment.app.viewModels
+import com.example.android.politicalpreparedness.R
+import com.example.android.politicalpreparedness.databinding.FragmentRepresentativeBinding
 import com.example.android.politicalpreparedness.network.models.Address
-import java.util.Locale
+import com.example.android.politicalpreparedness.representative.adapter.RepresentativeListAdapter
+import com.example.android.politicalpreparedness.util.LocationUtils
+import com.example.android.politicalpreparedness.util.PermissionManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.*
 
-class DetailFragment : Fragment() {
+class RepresentativeFragment : PermissionManager() {
+    private val viewModel by viewModels<RepresentativeViewModel>()
 
-    companion object {
-        //TODO: Add Constant for Location request
+    private lateinit var binding: FragmentRepresentativeBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentRepresentativeBinding.inflate(inflater, container, false).apply {
+            viewModel = this@RepresentativeFragment.viewModel
+            lifecycleOwner = this@RepresentativeFragment
+        }
+
+        populateStatesInformation()
+        populateAddressInformation()
+
+        binding.recyclerViewRepresentatives.adapter = RepresentativeListAdapter().apply {
+            viewModel.representatives.observe(viewLifecycleOwner) { submitList(it) }
+        }
+
+        binding.findRepresentativesButton.setOnClickListener { findMyRepresentatives() }
+        binding.useLocationButton.setOnClickListener { findWithLocation() }
+
+        return binding.root
     }
 
-    //TODO: Declare ViewModel
+    private fun findMyRepresentatives() {
+        hideKeyboard()
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+        val address = with(binding) {
+            Address(
+                    addressLine1.text.toString(),
+                    addressLine2.text.toString(),
+                    addressCity.text.toString(),
+                    addressState.text.toString(),
+                    addressZip.text.toString()
+            )
+        }
 
-        //TODO: Establish bindings
-
-        //TODO: Define and assign Representative adapter
-
-        //TODO: Populate Representative adapter
-
-        //TODO: Establish button listeners for field and location search
-
+        viewModel.fetchRepresentatives(address)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        //TODO: Handle location permission result to get location on permission granted
-    }
+    private fun findWithLocation() {
+        hideKeyboard()
 
-    private fun checkLocationPermissions(): Boolean {
-        return if (isPermissionGranted()) {
-            true
-        } else {
-            //TODO: Request Location permissions
-            false
+        if (!LocationUtils.hasLocationPermissions()) {
+            LocationUtils.requestPermissions {
+                when {
+                    it.areAllGranted -> findWithLocation()
+                    it.shouldShowRequestRationale -> showLocationRequestRationale()
+                    else -> binding.useLocationButton.isEnabled = false
+                }
+            }
+            return
+        }
+
+        LocationUtils.requestSingleUpdate {
+            val address = geoCodeLocation(it)
+            viewModel.fetchRepresentatives(address)
         }
     }
 
-    private fun isPermissionGranted() : Boolean {
-        //TODO: Check if permission is already granted and return (true = granted, false = denied/other)
+    private fun showLocationRequestRationale() {
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.location_required)
+                .setMessage(R.string.location_required_desc)
+                .show()
     }
 
-    private fun getLocation() {
-        //TODO: Get location from LocationServices
-        //TODO: The geoCodeLocation method is a helper function to change the lat/long location to a human readable street address
+    private fun populateStatesInformation() {
+        val statesArray = requireContext().resources.getStringArray(R.array.states)
+        binding.addressState.setAdapter(ArrayAdapter(requireContext(), R.layout.layout_state_list_item, statesArray))
+
+        viewModel.address.observe(viewLifecycleOwner) {
+            var index = statesArray.indexOf(it.state)
+            if (index == -1) {
+                index = 0
+            }
+            binding.addressState.setSelection(index)
+        }
+    }
+
+    private fun populateAddressInformation() = viewModel.address.observe(viewLifecycleOwner) {
+        with(binding) {
+            addressLine1.setText(it.line1)
+            addressLine2.setText(it.line2)
+            addressCity.setText(it.city)
+            addressZip.setText(it.zip)
+        }
     }
 
     private fun geoCodeLocation(location: Location): Address {
@@ -66,7 +119,6 @@ class DetailFragment : Fragment() {
 
     private fun hideKeyboard() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
     }
-
 }
