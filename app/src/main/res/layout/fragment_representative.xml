@@ -21,10 +21,10 @@
             android:id="@+id/address_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/med_margin"
             android:backgroundTint="@color/cardview_light_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="16dp"
+            app:cardCornerRadius="@dimen/card_radius"
+            app:cardElevation="@dimen/card_elevation"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,8 +37,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/address_line_1"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -52,7 +52,7 @@
                     android:id="@+id/address_line_2_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     android:hint="@string/address_line_2"
                     app:layout_constraintTop_toBottomOf="@id/address_line_1_layout">
 
@@ -67,7 +67,7 @@
                     android:id="@+id/address_city_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     android:hint="@string/address_city"
                     app:layout_constraintTop_toBottomOf="@id/address_line_2_layout">
 
@@ -84,8 +84,8 @@
                     android:id="@+id/address_zip_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
                     android:hint="@string/address_zip"
                     app:layout_constraintEnd_toStartOf="@id/address_state_layout"
                     app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +106,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="@dimen/small_margin"
                     android:hint="@string/address_state"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/address_zip_layout"
@@ -127,7 +127,7 @@
                     android:id="@+id/findRepresentativesButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/med_margin"
                     android:text="@string/find_my_representatives"
                     app:layout_constraintTop_toBottomOf="@id/address_zip_layout" />
 
@@ -145,9 +145,9 @@
         <View
             android:id="@+id/section_divider"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginHorizontal="128dp"
-            android:layout_marginVertical="32dp"
+            android:layout_height="@dimen/small_height"
+            android:layout_marginHorizontal="@dimen/extra_large_margin"
+            android:layout_marginVertical="@dimen/large_margin"
             app:visibleIf="@{viewModel.hasRepresentativesData}"
             android:background="@color/cardview_shadow_start_color"
             app:layout_constraintTop_toBottomOf="@id/address_form" />
@@ -156,7 +156,7 @@
             android:id="@+id/recyclerView_representatives"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/med_margin"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/section_divider"

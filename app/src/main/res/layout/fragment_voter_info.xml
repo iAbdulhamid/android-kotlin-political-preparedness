@@ -25,15 +25,15 @@
         <TextView
             android:id="@+id/election_date"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
+            android:layout_height="@dimen/extra_large_height"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
             android:text="@{DateConverter.toSimpleString(election.electionDay)}"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="@dimen/med_text_size"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="12 November 2055" />
+            tools:text="@string/dummy_election_date" />
 
         <TextView
             android:id="@+id/state_header"
@@ -63,7 +63,7 @@
             style="@style/LinkLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/small_margin"
             android:clickable="true"
             android:text="@string/ballot_information"
             app:layout_constraintStart_toStartOf="@id/state_header"
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_padding"
-            android:lineSpacingExtra="5dp"
+            android:lineSpacingExtra="@dimen/line_space"
             android:text="@{viewModel.mailingAddress}"
             app:layout_constraintStart_toStartOf="@id/state_header"
             app:layout_constraintTop_toBottomOf="@id/state_correspondence_header"
