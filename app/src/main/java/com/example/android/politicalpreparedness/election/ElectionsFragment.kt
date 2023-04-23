@@ -25,7 +25,7 @@ class ElectionsFragment : Fragment() {
         binding = FragmentElectionBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        binding.run {
+        with(binding) {
             configureRecyclerView(recyclerViewUpcomingElections, viewModel.allElections)
             configureRecyclerView(recyclerViewSavedElections, viewModel.savedElections)
         }
