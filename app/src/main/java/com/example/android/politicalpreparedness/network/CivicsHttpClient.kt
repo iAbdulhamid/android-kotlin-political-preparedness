@@ -1,11 +1,10 @@
 package com.example.android.politicalpreparedness.network
 
-import com.example.android.politicalpreparedness.BuildConfig
 import okhttp3.OkHttpClient
 
 class CivicsHttpClient : OkHttpClient() {
     companion object {
-        private const val API_KEY = BuildConfig.CIVICS_API_KEY
+        private const val API_KEY = "AIzaSyDeDN_SDVU0eDBPZMEGZC6SiKiebAlrj2k"
 
         fun getClient(): OkHttpClient {
             return Builder().addInterceptor { chain ->
